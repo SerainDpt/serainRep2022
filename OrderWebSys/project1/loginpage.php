@@ -37,81 +37,83 @@ if(isset($_POST["send"])){
   $pw=$_POST["user_pw"];
 
 
-if(empty($id)) 
-{ // 欄位沒填
+  if (empty($id)) { // 欄位沒填
     $error = "帳號為必填欄位<br/>";
+ }
+ else if (empty($pw))  
+   { // 欄位沒填
+     $error .= "密碼為必填欄位<br/>";
+  } 
+  else { // 表單處理
+$db=mysqli_connect("localhost","root","@567-ygv-bnm@");
+if(!$db)
+{die("無法連線伺服器".mysqli_error());}
+
+$db_select=mysqli_select_db($db,"ordering_system"); 
+if(!$db_select)
+{die("無法選擇資料庫".mysqli_error());}
+// 設定連線編碼
+mysqli_query( $db, "SET NAMES 'utf8'");
+
+$sql= "SELECT * FROM guest WHERE  guest_id='".$id." '";
+if(!mysqli_query($db,$sql)){
+
+  $sqlerr.="FAIL".mysqli_error();
 }
-else if(empty($pw))  
-{ 
-    // 欄位沒填
-    $error .= "密碼為必填欄位<br/>";
-} 
-else 
-{ 
-    // 表單處理
-    $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
-    if(!$db)
-    {
-      die("無法連線伺服器".mysqli_error());
-    }
 
-    $db_select=mysqli_select_db($db,"ordering_system"); 
-    if(!$db_select)
-    {
-      die("無法選擇資料庫".mysqli_error());
-    }
-    // 設定連線編碼
-    mysqli_query( $db, "SET NAMES 'utf8'");
+$result=mysqli_query($db,$sql);
+$num=mysqli_num_rows($result);
+$row=mysqli_fetch_array($result,MYSQLI_ASSOC);
 
-    $sql= "SELECT * FROM guest WHERE  guest_id='".$id." '";
-    if(!mysqli_query($db,$sql))
-    {
-      $sqlerr.="FAIL".mysqli_error();
-    }
+if($num>0){
 
-    $result=mysqli_query($db,$sql);
-    $num=mysqli_num_rows($result);
-    $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-
-    if($num>0)
-    {
-        if($row["guset_password"] == $pw)
-        {    
-            $sqlerr.="success";
+    if($row["guset_password"] == $pw)
+    {    $sqlerr.="success";
+        
+       
             $_SESSION["username"]=$id;
+      
             mysqli_free_result($db);
+
+           
             header("Location:orderstep1.php");
             exit();
-        }
-        else
-        { 
-          echo '<script language="javascript">';
-          echo 'alert("密碼錯誤")';
-          echo '</script>'; 
-        } 
-    }
-    else 
-    {
+             }
+  else
+    { 
       
-      echo '<script>';
-      echo 'alert("帳號不存在")';
-      echo '</script>';
-    
-    }
-
-    mysqli_free_result($db);
-    mysqli_close($db);
+      echo '<script language="javascript">';
+      echo 'alert("密碼錯誤")';
+      echo '</script>'; 
+      
+      } 
 
 }
-}
-
-
-else
+else 
 {
-    $id="";$pw="";
+  
+  echo '<script>';
+  echo 'alert("帳號不存在")';
+  echo '</script>';
+ 
+}
+
+mysqli_free_result($db);
+mysqli_close($db);
+
+}
+}
+
+
+else{
+$id="";$pw="";
+
 }
 
 ?>
+
+
+
 
 <div data-role="page" id="loginpage" class="ui-page ui-body-c">
   <div data-role="header">

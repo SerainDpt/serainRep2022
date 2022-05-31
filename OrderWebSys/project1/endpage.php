@@ -16,20 +16,20 @@
 </script>
 
 <style>
-.ui-page.ui-body-c 
-{
+.ui-page.ui-body-c {
     background: url(picture/bg.jpg);
     background-repeat:no-repeat;
     background-position:center center;
     background-size:cover;  
 }
-.button 
-{
+.button {
+  
   float: right;
   font-size: 12px;
   top:-40px;
   height:20px; 
   margin: 0px;
+
 }
 </style>
 <?php
@@ -37,13 +37,17 @@
 session_start();
 $user_id=$_SESSION["username"];
 
-if(empty($_SESSION['username']))
-{  
-    session_unset();
-    session_destroy();
-    header('Location: startpage.html');
-    exit;
-}
+if(empty($_SESSION['username'])){
+        
+  session_unset();
+  session_destroy();
+  header('Location: startpage.html');
+  exit;
+      }
+
+
+
+
 ?>
 </head>
 

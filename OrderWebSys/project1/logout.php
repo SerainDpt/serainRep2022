@@ -1,8 +1,12 @@
 <?php
-  mysqli_close($db);
-  session_unset($_SESSION['username']);
-  session_unset($_SESSION["pre_url"]);
+ 
+  //mysqli_close($db);
+  //session_unset($_SESSION['username']);
+  //session_unset($_SESSION['pre_url']);
+  session_unset();
+  session_unset();
   session_destroy();
+
   //清除cookie
    $tmp=(int)($_COOKIE['currentnumitem']);
   for($i=1; $i<=$tmp; $i++)

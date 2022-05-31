@@ -43,15 +43,17 @@ div.error { float: right; color : red; }
 
 
 session_start();
-if(!isset($_SESSION['username']))
-{   
+
+
+if(!isset($_SESSION['username'])){
+        
   session_unset();
   session_destroy();
   header('Location:startpage.html');
   exit;
-}
+      }
 else      
-  $user_id=$_SESSION["username"];
+$user_id=$_SESSION["username"];
 
 
 //-----------connect資料庫-----------------//
@@ -59,15 +61,11 @@ else
 
 $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
 if(!$db)
-{
-  die("無法連線伺服器".mysqli_error());
-}
+{die("無法連線伺服器".mysqli_error());}
 
 $db_select=mysqli_select_db($db,"ordering_system"); 
 if(!$db_select)
-{
-  die("無法選擇資料庫".mysqli_error());
-}
+{die("無法選擇資料庫".mysqli_error());}
 // 設定連線編碼
 mysqli_query( $db, "SET NAMES 'utf8'");
 
@@ -182,201 +180,216 @@ mysqli_query( $db, "SET NAMES 'utf8'");
 
 
 
-$(document).ready(
-  function()
-  {
+$(document).ready(function(){
   
 
-      var newdata,newtime,newpickway;
-      var phonenumber='';
-      $('input[name="pdate"]').change(
-        function()
-          {
-                newdata=$(this).val();
-                
-                $('div#err1').html('');
-                event.stopPropagation();
-          }
-        );
+   var newdata,newtime,newpickway;
+   var phonenumber='';
+   $('input[name="pdate"]').change(function(){
+           newdata=$(this).val();
+          
+          $('div#err1').html('');
+          event.stopPropagation();
+     });
 
 
-        $( 'select#ptime' ).change(
-          function() 
-          {
-            newtime=$(this).val();    
-            $('div#err2').html('');
-            event.stopPropagation();
-          }
-        );
+     $( 'select#ptime' ).change(function() {
 
-        $(document).on('change','input[name="delivery"]',
-            function() 
+         newtime=$(this).val();
+        
+        $('div#err2').html('');
+        event.stopPropagation();
+     });
+
+     $(document).on('change','input[name="delivery"]',function() {
+
+         newpickway=$('input[name="delivery"]:checked').val();
+         user_id=$('input[name=foruser]').val();
+         $('div#err3').html('');
+        
+          
+          if(newpickway=='1')
             {
-                newpickway=$('input[name="delivery"]:checked').val();
-                user_id=$('input[name=foruser]').val();
-                $('div#err3').html('');
-                if(newpickway=='1')
-                {
-                    newpickway='外送';
-                      //透過ajax取出guest資料表中使用者的通訊地址資訊,讓使用者確認是否送往該處
-                      $.ajax(
-                        {
-                        type: 'post',
-                        url:  'getDBaddress.php',
-                        dataType: 'json',
-                        data: { username : user_id},
-                                  
-                        success: function(data) 
-                        {
-                          var i=0;
-                          $.each(data, 
-                              function(key,value) 
-                              {
-                                if(value!='請確認外送地址')
-                                {                           
-                                    $('div#d_info').append('<div id=upuser2>請確認外送地址</div><input type="text" style="font-size:20px" id="useraddress" size="33" value="'+value+'"/>' ).enhanceWithin();
-                                }
-                                else
-                                {
-                                    $('div#d_info').append('<input type="text" id="useraddress" placeholder="請確認外送地址"/>' ).enhanceWithin();
-                                }                                                           
-                                  i++;
-                              }
-                            );
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) 
-                        {
-                          console.log(textStatus, errorThrown);
-                          console.warn(jqXHR.responseText);
-                        }
-                        
+              newpickway='外送';
+
+                //透過ajax取出guest資料表中使用者的通訊地址資訊,讓使用者確認是否送往該處
+                $.ajax({
+                  type: 'post',
+                  url:  'getDBaddress.php',
+                  dataType: 'json',
+                  data: { username : user_id
+                            },
+                            
+                  success: function(data) {
+                    var i=0;
+                 
+                      $.each(data, function(key,value) {
+
+                          if(value!='請確認外送地址')
+                          {
+                            
+                            $('div#d_info').append('<div id=upuser2>請確認外送地址</div><input type="text" style="font-size:20px" id="useraddress" size="33" value="'+value+'"/>' ).enhanceWithin();
+                            //$('div#d_address').append('<div id=upuseraddress>請確認外送地址</div><input type="text" style="font-size:20px" id="useraddress" size="33" value="'+element+'"/>' );
+                          
+                            
+                          }
+                          else
+                            {
+                              $('div#d_info').append('<input type="text" id="useraddress" placeholder="請確認外送地址"/>' ).enhanceWithin();
+                            } 
+                                                       
+                            i++;
                       });
-                
-                }
-
-                if(newpickway=='2')
-                {
-                  newpickway='外帶';
-                  $('input#useraddress').remove();
-                  $('div#upuser2').remove();
-                }
-
-                event.stopPropagation();
-              }
-          );
-
-
-        $(document).on('blur','input#userphone',
-              function()
-              {
-                  function Iscellphone(phone) 
-                  { 
-                    var regex = /^09\d{8}$/;
-                    if(!regex.test(phone)) 
-                    {
-                      return false;
-                    }
-                    else
-                    {
-                      return true;
-                    }
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                    console.warn(jqXHR.responseText);
                   }
-
-                  $phonechecking=Iscellphone($(this).val());
-
-                  if($phonechecking==false)
-                    $('input#userphone').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫正確格式</span>').enhanceWithin();  
-                  event.stopPropagation();
-              }
-            );
-
-        $(document).on('focus','input#userphone', 
-            function() 
-            {
-              // 取得表單欄位值
-              $('input#userphone').parent().next('span').remove();
-              event.stopPropagation();
+                  
+                });
+          
             }
-        );
-
-
-        $(document).on('blur','input#useraddress',
-            function()
+            if(newpickway=='2')
             {
-                if($('input#useraddress').val().length<10)
-                  $('input#useraddress').after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫詳細地址</span>').enhanceWithin();
-                event.stopPropagation();
+
+              
+              newpickway='外帶';
+              $('input#useraddress').remove();
+              $('div#upuser2').remove();
+             
+            
             }
-        );
 
-        $(document).on('focus','input#useraddress', 
-            function() 
-            {
-                // 取得表單欄位值
-                $('input#useraddress').next('span').remove();
-                event.stopPropagation();
-            }
-          );
+        
+       
 
-      // 點選button行為
-      $(document).on('click','button#send',
-            function() 
-            {
-                if( $('#pdate').val().length==0)
-                { 
-                    $('div#err1').html('取餐日期未選取 ');
-                }
 
-                if($('select#ptime').val().length==0)
-                {
-                    $('div#err2').html('取餐時間未選取 ');
-                }
+            event.stopPropagation();
+        });
 
-                if(!$('input[name="delivery"]:checked').val())
-                {  
-                    $('div#err3').html('取餐方式未選取 ');
-                }
 
-                if($('input[name="delivery"]:checked').val()=='1')
-                {
-                    if($('#pdate').val().length!=0  && $('select#ptime').val().length!=0 && $('input#useraddress').val().length>=10 && $('input#userphone').val().length==10)
-                    {
-                            newpickway='外送';
-                            var myAry = [$('#pdate').val(), $('select#ptime').val(), newpickway];
-                            //createCookie('userpickway', JSON.stringify(myAry),1);
-                            Cookies.set('userpickway', JSON.stringify(myAry), { expires: 1 });
-                            Cookies.set('currentphone', $('input#userphone').val(), { expires: 1 }); 
-                            Cookies.set('currentaddress', $('input#useraddress').val(), { expires: 1 });
-                            var arr= JSON.parse(Cookies.get('userpickway'));                   
-                            window.location.href="orderstep2.php";
-                    }
-                    else
-                    {
-                      $('div#err4').html('請確認格式是否有誤');
-                    }
-                }
+  $(document).on('blur','input#userphone',function(){
 
-                if($('input[name="delivery"]:checked').val()=='2')
-                {
-                    if($('#pdate').val().length!=0  && $('select#ptime').val().length!=0 &&  $('input#userphone').val().length==10)
-                    {   
-                      newpickway='外帶';
-                      var myAry = [$('#pdate').val(), $('select#ptime').val(), newpickway];
-                      //createCookie('userpickway', JSON.stringify(myAry),1);
-                      Cookies.set('userpickway', JSON.stringify(myAry), { expires: 1 });
-                      Cookies.set('currentphone', $('input#userphone').val(), { expires: 1 }); 
-                      var arr= JSON.parse(Cookies.get('userpickway'));
-                      window.location.href="orderstep2.php";
-                    }                   
-                    else
-                      $('div#err4').html('請確認格式是否有誤');
-                }             
-                event.stopPropagation();
-
+        function Iscellphone(phone) { 
+        var regex = /^09\d{8}$/;
+        if(!regex.test(phone)) {
+          return false;
         }
-      );
-  }
-);
+        else{
+          return true;
+        }
+        }
+
+        $phonechecking=Iscellphone($(this).val());
+
+       if($phonechecking==false)
+        $('input#userphone').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫正確格式</span>').enhanceWithin();  
+
+
+        event.stopPropagation();
+        });
+
+    $(document).on('focus','input#userphone', function() {
+       // 取得表單欄位值
+     
+       $('input#userphone').parent().next('span').remove();
+
+       event.stopPropagation();
+    });
+
+
+  $(document).on('blur','input#useraddress',function(){
+
+          if($('input#useraddress').val().length<10)
+             $('input#useraddress').after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫詳細地址</span>').enhanceWithin();
+
+             event.stopPropagation();
+        });
+
+  $(document).on('focus','input#useraddress', function() {
+       // 取得表單欄位值
+     
+       $('input#useraddress').next('span').remove();
+
+       event.stopPropagation();
+    });
+
+  // 點選button行為
+  $(document).on('click','button#send',function() {
+
+
+    if( $('#pdate').val().length==0){ 
+    
+       $('div#err1').html('取餐日期未選取 ');
+    }
+     if($('select#ptime').val().length==0){
+     
+       $('div#err2').html('取餐時間未選取 ');
+      }
+
+      if(!$('input[name="delivery"]:checked').val()){
+     
+     $('div#err3').html('取餐方式未選取 ');
+    }
+      
+  
+
+
+
+    if($('input[name="delivery"]:checked').val()=='1'){
+
+      if($('#pdate').val().length!=0  && $('select#ptime').val().length!=0 && $('input#useraddress').val().length>=10 && $('input#userphone').val().length==10)
+          {
+            
+              newpickway='外送';
+              var myAry = [$('#pdate').val(), $('select#ptime').val(), newpickway];
+              //createCookie('userpickway', JSON.stringify(myAry),1);
+              Cookies.set('userpickway', JSON.stringify(myAry), { expires: 1 });
+              Cookies.set('currentphone', $('input#userphone').val(), { expires: 1 }); 
+              Cookies.set('currentaddress', $('input#useraddress').val(), { expires: 1 });
+              var arr= JSON.parse(Cookies.get('userpickway'));
+          
+
+
+              window.location.href="orderstep2.php";
+              }
+      else
+      {
+       
+        $('div#err4').html('請確認格式是否有誤');
+      
+      }
+    }
+
+    if($('input[name="delivery"]:checked').val()=='2'){
+
+    if($('#pdate').val().length!=0  && $('select#ptime').val().length!=0 &&  $('input#userphone').val().length==10)
+    {
+    
+      newpickway='外帶';
+      var myAry = [$('#pdate').val(), $('select#ptime').val(), newpickway];
+      //createCookie('userpickway', JSON.stringify(myAry),1);
+      Cookies.set('userpickway', JSON.stringify(myAry), { expires: 1 });
+      Cookies.set('currentphone', $('input#userphone').val(), { expires: 1 }); 
+        var arr= JSON.parse(Cookies.get('userpickway'));
+
+
+    
+      window.location.href="orderstep2.php";
+
+    }
+     
+    else
+      $('div#err4').html('請確認格式是否有誤');
+    }
+   
+    event.stopPropagation();
+
+  });
+
+
+
+});
 
 </script>
 
