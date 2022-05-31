@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width ,initial-scale=1">
+<title>Restaurant</title>
+<link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" href="css/themes/planBtheme.css">
+<link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css">
+
+<script src="jquery-1.x-git.min.js"></script>
+<script src="jquery.mobile-1.4.5.min.js"></script>
+<script src="js.cookie.js"></script>
+<style>
+.ui-page.ui-body-c {
+    background: url(picture/bg.jpg);
+    background-repeat:no-repeat;
+    background-position:center center;
+    background-size:cover;  
+}
+
+</style>
+
+</head>
+
+<body>
+    <!--首頁-->
+<div data-role="page" id="home" data-fullscreen="true" class="ui-page ui-body-c">
+    <div data-role="header">
+       <h1>Restaurant</h1> 
+        
+    </div>
+
+    <div data-role="content" > 
+        <div class="ui-body ui-body-a ui-corner-all">
+        <h3>線上訂購</h3>
+            <p >
+                    使用會員訂購餐點，可享會員 專屬優惠
+                    並可不定期收到最新優惠資訊！
+            </p> 
+        </div>     
+            <!--data-iconpos 設定按鈕圖示顯示在字串"開始點餐的上方"-->
+        
+          
+
+            <div class="button" data-role="fieldcontain" >
+                <a href="loginpage.php"  data-role="button" id="send" name="send" data-ajax="false">登入</a>
+            </div>
+            <div class="button" data-role="fieldcontain" >
+                <a href="createpage.php" data-role="button" id="reset" name="reset" data-ajax="false">註冊</a>
+            </div>  
+            
+
+        
+
+    </div>
+
+    
+
+
+</div>
+
+</body>
+</html>
