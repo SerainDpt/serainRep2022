@@ -23,67 +23,49 @@
 <?php
 
 session_start();
-
-
-if(!isset($_SESSION['username'])){
-        
-  session_unset();
-  session_destroy();
-  header('Location:startpage.html');
-  exit;
-      }
+if(!isset($_SESSION['username']))
+{      
+    session_unset();
+    session_destroy();
+    header('Location:startpage.html');
+    exit;
+}
 else      
-$user_id=$_SESSION["username"];
+    $user_id=$_SESSION["username"];
 
 //回到最初進入page(跳過密碼輸入page)
 $pre_url=$_SESSION["pre_url"];
 
-
-
-
-
+//-----------connect資料庫-----------------//
 $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
 if(!$db)
-{die("無法連線伺服器".mysqli_error());}
-
+    die("無法連線伺服器".mysqli_connect_errno());
 $db_select=mysqli_select_db($db,"ordering_system"); 
 if(!$db_select)
-{die("無法選擇資料庫".mysqli_error());}
-// 設定連線編碼
-mysqli_query( $db, "SET NAMES 'utf8'");
+    die("無法選擇資料庫".mysqli_connect_errno());      
+mysqli_query( $db, "SET NAMES 'utf8'");// 設定連線編碼
 
 
 $error = ""; $result =0 ; 
-if(isset($_POST["send"])){
+if(isset($_POST["send"]))
+{
+    $email=$_POST["email"];  
+    $phone=$_POST["phone"];
+    $name=$_POST["user_name"];
+    $address=$_POST["address"];
 
+    $sql= "UPDATE guest SET guest_email='". $email."',guest_phone='".$phone."',guest_address='".$address."',guest_name='".$name."'
+            WHERE guest_id='".$user_id."'";
 
-  
-  $email=$_POST["email"];  
-  $phone=$_POST["phone"];
-  $name=$_POST["user_name"];
-  $address=$_POST["address"];
-
-
-
-$sql= "UPDATE guest SET guest_email='". $email."',guest_phone='".$phone."',guest_address='".$address."',guest_name='".$name."'
-        WHERE guest_id='".$user_id."'";
-
-mysqli_query($db,$sql)
-or die(mysqli_error($db));
-
-
-echo '<script language="javascript">';
-echo 'alert("已更新")';
-echo '</script>'; 
-        }
-
+    mysqli_query($db,$sql) or die(mysqli_error($db));
+    echo '<script language="javascript">';
+    echo 'alert("已更新")';
+    echo '</script>'; 
+}
 
 $sql2= "SELECT * FROM guest WHERE guest_id='".$user_id."'";
-
 $result=mysqli_query($db,$sql2);
 $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
-   
-
 $oldname=$row['guest_name'];
 $oldmail=$row['guest_email'];
 $oldphone=$row['guest_phone'];
@@ -149,21 +131,20 @@ $(document).ready(function() {
           flag_c=0;
        }   
        else
-          flag_c=1;  
-        event.stopPropagation();
+          flag_c=1;
 
-           if(flag_c==0 || flag_d==0 || flag_e==0)
-               $('button#send').attr('disabled', 'disabled');   
-            else
-                  $('button#send').removeAttr("disabled");
+       event.stopPropagation();
+
+       if(flag_c==0 || flag_d==0 || flag_e==0)
+           $('button#send').attr('disabled', 'disabled');   
+       else
+           $('button#send').removeAttr("disabled");
 
     });
 
     $('input[name=user_name]').focus( function() {
        // 取得表單欄位值
-     
        $('input[name=user_name]').parent().next('span').remove();
-
        event.stopPropagation();
     });
 
@@ -171,10 +152,12 @@ $(document).ready(function() {
    /*-------------------------處理mail-------------------------------------*/
    function IsEmail(email) { 
     var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if(!regex.test(email)) {
+    if(!regex.test(email)) 
+    {
       return false;
     }
-    else{
+    else
+    {
       return true;
     }
     }
@@ -183,24 +166,22 @@ $(document).ready(function() {
        
        $Emailchecking=IsEmail($(this).val());
        if($Emailchecking==false)
-        {
-          $('input[name=email]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫正確的E-MAIL格式</span>');  
-          flag_d=0;
-        }
+       {
+            $('input[name=email]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫正確的E-MAIL格式</span>');  
+            flag_d=0;
+       }
         else
-        flag_d=1;
+            flag_d=1;
 
         if(flag_c==0 || flag_d==0 || flag_e==0)
-               $('button#send').attr('disabled', 'disabled');   
-            else
-                  $('button#send').removeAttr("disabled");
+            $('button#send').attr('disabled', 'disabled');   
+        else
+            $('button#send').removeAttr("disabled");
         event.stopPropagation();
     });
     $('input[name=email]').focus( function() {
-       // 取得表單欄位值
-     
+       // 取得表單欄位值 
        $('input[name=email]').parent().next('span').remove();
-
        event.stopPropagation();
     });
     
@@ -209,11 +190,13 @@ $(document).ready(function() {
    
    function Iscellphone(phone) { 
     var regex = /^09\d{8}$/;
-    if(!regex.test(phone)) {
-      return false;
+    if(!regex.test(phone)) 
+    {
+        return false;
     }
-    else{
-      return true;
+    else
+    {
+        return true;
     }
     }
 
@@ -221,16 +204,17 @@ $(document).ready(function() {
        
        $phonechecking=Iscellphone($(this).val());
        if($phonechecking==false)
-        {$('input[name=phone]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫正確格式</span>');  
-          flag_e=0;
-        }
+       {
+            $('input[name=phone]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填寫正確格式</span>');  
+            flag_e=0;
+       }
         else
-         flag_e=1;
+            flag_e=1;
         
-         if(flag_c==0 || flag_d==0 || flag_e==0)
-               $('button#send').attr('disabled', 'disabled');   
-            else
-                  $('button#send').removeAttr("disabled");
+        if(flag_c==0 || flag_d==0 || flag_e==0)
+              $('button#send').attr('disabled', 'disabled');   
+        else
+              $('button#send').removeAttr("disabled");
 
         event.stopPropagation();
     });
@@ -247,17 +231,17 @@ $(document).ready(function() {
        
        $address=$(this).val();
        if($address<10)
-        {$('input[name=address]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請詳細填寫常用地址</span>');  
-          flag_f=0;
-        }
-        else
-         flag_f=1;
+       {
+            $('input[name=address]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請詳細填寫常用地址</span>');  
+            flag_f=0;
+       }
+       else
+          flag_f=1;
         
-         if(flag_c==0 || flag_d==0 || flag_e==0 ||flag_f==0)
-               $('button#send').attr('disabled', 'disabled');   
-            else
-                  $('button#send').removeAttr("disabled");
-
+       if(flag_c==0 || flag_d==0 || flag_e==0 ||flag_f==0)
+            $('button#send').attr('disabled', 'disabled');   
+       else
+            $('button#send').removeAttr("disabled");
         event.stopPropagation();
     });
     $('input[name=address]').focus( function() {

@@ -2,15 +2,14 @@
 //header('Content-Type: application/json; charset=utf-8');
 $name = $_POST["username"]; // 取得欄位值
 
-$db = mysqli_connect("localhost","root","@567-ygv-bnm@");
+//-----------connect資料庫-----------------//
+$db=mysqli_connect("localhost","root","@567-ygv-bnm@");
 if(!$db)
-{die("無法連線伺服器".mysqli_error());}
-
+    die("無法連線伺服器".mysqli_connect_errno());
 $db_select=mysqli_select_db($db,"ordering_system"); 
 if(!$db_select)
-{die("無法選擇資料庫".mysqli_error());}
-// 設定連線編碼
-mysqli_query( $db, "SET NAMES 'utf8'");
+    die("無法選擇資料庫".mysqli_connect_errno());      
+mysqli_query( $db, "SET NAMES 'utf8'");// 設定連線編碼
 
 
 $sql = "SELECT guest_id FROM guest WHERE guest_id = '".$name."'";

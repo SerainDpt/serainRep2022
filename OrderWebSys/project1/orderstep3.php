@@ -30,29 +30,19 @@
 </style>
 
 </head>
-
-
-
 <body>
-
-
 <?php
-
 session_start();
 $user_id=$_SESSION["username"];
 
-if(empty($_SESSION['username'])){
-        
-  session_unset();
-  session_destroy();
-  header('Location: startpage.html');
-  exit;
-      }
-
+if(empty($_SESSION['username']))
+{       
+    session_unset();
+    session_destroy();
+    header('Location: startpage.html');
+    exit;
+}
 $result = "";
-
-
-
 ?>
 
 
@@ -88,124 +78,99 @@ $result = "";
           
           <?php
 
+          //-----------connect資料庫-----------------//
           $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
           if(!$db)
-          {die("無法連線伺服器".mysqli_error());}
-
+              die("無法連線伺服器".mysqli_connect_errno());
           $db_select=mysqli_select_db($db,"ordering_system"); 
           if(!$db_select)
-          {die("無法選擇資料庫".mysqli_error());}
-          // 設定連線編碼
-          mysqli_query( $db, "SET NAMES 'utf8'");
-
+              die("無法選擇資料庫".mysqli_connect_errno());      
+          mysqli_query( $db, "SET NAMES 'utf8'");// 設定連線編碼
 
           $arr="";$sqlerr="";
-
           if(isset($_COOKIE['userpickway']))
           {
-            $arr= json_decode($_COOKIE['userpickway'],true);
-            
-            if(isset($_COOKIE['currentaddress']))
-               $arr2= $_COOKIE['currentaddress'];
+                $arr= json_decode($_COOKIE['userpickway'],true);   
+                if(isset($_COOKIE['currentaddress']))
+                  $arr2= $_COOKIE['currentaddress'];
 
-            if(isset($_COOKIE['currentphone']))
-               $arr3= $_COOKIE['currentphone'];
-               
-
-            if($arr[2]=='外帶')
-            {  
-            echo "<li id='userdetail'>";                                                       
-            echo "<h3>"."您的取餐方式: ".$arr[2]."</br>".
-                 "取餐時間: ".$arr[0]." / ".$arr[1]."</br>".
-                 "聯絡號碼: "."</br>".$arr3."</h3></li>";
-            }  
-            else
-            {
-              echo "<li id='userdetail'>";                                                       
-              echo "<h3 >"."您的取餐方式: ".$arr[2]."</br>".
-                   "外送抵達時間: ".$arr[0]." / ".$arr[1]."</br>";
-                   
-                  if(strlen($arr2)<=17)   
-                    echo "外送地址: "."</br>".$arr2."</br>";
-                  else
-                    echo "外送地址: "."</br>".substr($arr2, 0, 18)."</br>".substr($arr2, 18, strlen($arr2)-17)."</br>".
-                         "聯絡號碼: "."</br>".$arr3."</h3></li>";
-
-             }         
-                 
-
+                if(isset($_COOKIE['currentphone']))
+                  $arr3= $_COOKIE['currentphone'];
+                  
+                if($arr[2]=='外帶')
+                {  
+                    echo "<li id='userdetail'>";                                                       
+                    echo "<h3>"."您的取餐方式: ".$arr[2]."</br>".
+                        "取餐時間: ".$arr[0]." / ".$arr[1]."</br>".
+                        "聯絡號碼: "."</br>".$arr3."</h3></li>";
+                }  
+                else
+                {
+                    echo "<li id='userdetail'>";                                                       
+                    echo "<h3 >"."您的取餐方式: ".$arr[2]."</br>".
+                        "外送抵達時間: ".$arr[0]." / ".$arr[1]."</br>";
+                      
+                    if(strlen($arr2)<=17)   
+                        echo "外送地址: "."</br>".$arr2."</br>";
+                    else
+                        echo "外送地址: "."</br>".substr($arr2, 0, 18)."</br>".substr($arr2, 18, strlen($arr2)-17)."</br>".
+                            "聯絡號碼: "."</br>".$arr3."</h3></li>";
+                }                          
           }
 
-                $arr2="";
-                //取出當前選購商品數量的cookie
-               if(isset($_COOKIE['currentnumitem']))
-               {
-                
-                //取出當前選購商品數量數值
-                $numitem=$_COOKIE['currentnumitem'];
-                
-                 //建立迴圈,依序從選購商品順序:1,開始列印出detail,直到超出當前商品數量時,結束迴圈
-                 for($a=1 ; $a<=$numitem ;$a++)
+          $arr2="";
+          //取出當前選購商品數量的cookie
+          if(isset($_COOKIE['currentnumitem']))
+          {
+          
+            //取出當前選購商品數量數值
+            $numitem=$_COOKIE['currentnumitem'];
+          
+            //建立迴圈,依序從選購商品順序:1,開始列印出detail,直到超出當前商品數量時,結束迴圈
+            for($a=1 ; $a<=$numitem ;$a++)
+            {
+
+                  if(isset($_COOKIE[$a]))
+                  $arr2= json_decode($_COOKIE[$a], true);   
+
+                  //若arr[0]!=0的狀況是該筆項目沒有被刪除,因若刪除的話,改筆cookie值的$arr[0]=0
+                  if(isset($arr2) && $arr2[0]!='0')
                   {
+                      //meal資料表中查詢餐點名稱
+                      $tmp=$arr2[1];
+                      $sql= "SELECT meal_name FROM meal WHERE meal_id='".$tmp." '";
+                      if(!mysqli_query($db,$sql)){
 
-                      if(isset($_COOKIE[$a]))
-                      $arr2= json_decode($_COOKIE[$a], true);
-                      
-                      //若arr[0]!=0的狀況是該筆項目沒有被刪除,因若刪除的話,改筆cookie值的$arr[0]=0
-                      if(isset($arr2) && $arr2[0]!='0')
-                      {
+                        $sqlerr.="FAIL".mysqli_connect_errno();
+                      }
 
-                        //meal資料表中查詢餐點名稱
-                        $tmp=$arr2[1];
-                        $sql= "SELECT meal_name FROM meal WHERE meal_id='".$tmp." '";
-                        if(!mysqli_query($db,$sql)){
-
-                          $sqlerr.="FAIL".mysqli_error();
-                        }
-
-                        $result=mysqli_query($db,$sql);
-                        //$num=mysqli_num_rows($result);
-                        $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-
-                        $meal_name=$row["meal_name"];
-
-                    //$listid='listid'.$a;
+                      $result=mysqli_query($db,$sql);
+                      $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
+                      $meal_name=$row["meal_name"];
                       //開始一項list
-                      echo "<li id=".$a.">";
-                      
-                                           
+                      echo "<li id=".$a.">";                                                            
                       echo "<h3 >".$meal_name."</h3>";
                       echo "<h3 style='background-color:yellow'>"."單價: ".$arr2[3]." 元  ".
                             "選購份數: ".$arr2[2]." 份 </h3></li>";
-
-                    }
+                   }           
+              }
                     
-
-                  }
-                          
-
-                  }
-                  mysqli_close($db);
-              //setcookie("name", "", time()-3600);
-            ?>
-          
-
-          <li id='sum'>
-          
-          <?php
-          if(isset($_COOKIE['currentsum']))
-          {
-             $sum= $_COOKIE['currentsum'];
-             echo "<h2>總金額</h2>";
-             echo "<h3 style='background-color:yellow'>".$sum."元 </h3>";
-          }
+            }
+            mysqli_close($db);
           ?>
+          
+      <li id='sum'>
 
-          </li>
+      <?php
+      if(isset($_COOKIE['currentsum']))
+      {
+          $sum= $_COOKIE['currentsum'];
+          echo "<h2>總金額</h2>";
+          echo "<h3 style='background-color:yellow'>".$sum."元 </h3>";
+      }
+      ?>
 
-
-
-
+      </li>
     </ul>
 
           <div data-role="fieldcontain" >
@@ -233,21 +198,8 @@ $(document).ready(function(){
 
 });
 
-
-
 </script>
-
   </div>
-
-  
-
-
 </div>
-
-
-
-
-
-
 </body>
 </html>

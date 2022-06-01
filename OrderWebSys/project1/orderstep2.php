@@ -35,42 +35,34 @@ div.error { float: right; color : red; }
 <?php
 
 session_start();
-
 $user_id=$_SESSION["username"];
-
-if(empty($_SESSION['username'])){
-        
+if(empty($_SESSION['username']))
+{
   session_unset();
   session_destroy();
   header('Location: startpage.html');
   exit;
-      }
+}
 
 $result = "";
 
 //-----------connect資料庫-----------------//
-
-
 $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
 if(!$db)
-{die("無法連線伺服器".mysqli_error());}
-
+    die("無法連線伺服器".mysqli_connect_errno());
 $db_select=mysqli_select_db($db,"ordering_system"); 
 if(!$db_select)
-{die("無法選擇資料庫".mysqli_error());}
-// 設定連線編碼
-mysqli_query( $db, "SET NAMES 'utf8'");
+    die("無法選擇資料庫".mysqli_connect_errno());      
+mysqli_query( $db, "SET NAMES 'utf8'");// 設定連線編碼
 
-for($i=1; $i<=4;$i++){
-$sql= "SELECT * FROM meal WHERE meal_id='".$i."'";
-$result=mysqli_query($db,$sql);
-//$num=mysqli_num_rows($result);
-//echo $num;
-$row = mysqli_fetch_array($result, MYSQLI_NUM);
-$meal[$i] = array("meal_id"=>$row[0],"meal_name"=>$row[1] ,"price"=>$row[2]);
 
+for($i=1; $i<=4;$i++)
+{
+    $sql= "SELECT * FROM meal WHERE meal_id='".$i."'";
+    $result=mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($result, MYSQLI_NUM);
+    $meal[$i] = array("meal_id"=>$row[0],"meal_name"=>$row[1] ,"price"=>$row[2]);
 }
-
 mysqli_close($db);
 ?>
 
@@ -266,81 +258,61 @@ mysqli_close($db);
 
 
   </div><!-- /footer -->
+  <script>
 
 
 
-
-<script>
 //建立car物件,作為計算總額使用
-  var car={
-   total:0,
-   numitem:0
-
-  };
+var car = { total:0, numitem:0 };
   
 $(document).ready(function(){
- // var username =<%= Session["TEST_SESSION"].ToString() %>; 
   
  var price;
   $(document).on('click','button',function() {
-   
- 
-    //$(this).removeAttr('data-role');
-    var str="";
-    var meal=$(this).prop('name'); 
-    //var meal=event.target.name; 
 
-    
+    var str="";
+    var meal=$(this).prop('name');   
     var q=$(this).parent().find('select option:selected').val();
     var iq=parseInt(q);
     
-
-
     $.ajax({
          type: 'post',
          url:  'getDBmeal.php',
          dataType: 'json',
-         data: { mealid : meal
-                  },
+         data: { mealid : meal },
                    
          success: function(data) {
            
             $.each(data, function(index, element) {
              
                 if(element!='error')
-                  price=element;
+                    price=element;
                 
                 var iprice=parseInt(price);
                 var sum=iq*iprice;
-                  
 
-
-              //計算每筆item 編號,若cookie('currentnumitem')不存在,代表第一次進行購物；
+                //計算每筆item 編號,若cookie('currentnumitem')不存在,代表第一次進行購物；
               //若存在,代表可能是從購物車返回到此頁的情況,這時再把cookie('currentnumitem')值取出作為item編號,避免蓋過原本的cookie
-              if(!parseInt(Cookies.get('currentnumitem')))
-              { 
-                car.numitem++;             
-              }
-              else
-              {
+                if(!parseInt(Cookies.get('currentnumitem')))
+                { 
+                  car.numitem++;                 
+                }
+                else
+                {
                   car.numitem=parseInt(Cookies.get('currentnumitem'));
                   car.numitem++;               
-              }
-
-
+                }
 
                 //建立當前選購商品總金額的cookie
                 if(car.numitem ==1)
                 {
-                    //createCookie('currentsum', sum,1);
                     Cookies.set('currentsum', sum, { expires: 1 });
                     $('span.ui-li-count').html(sum+'元');
                 }
                 else
                 {
                     var tmp= parseInt(Cookies.get('currentsum'));
-                    currentsum= sum+tmp;     
-                    //createCookie('currentsum', currentsum,1);
+                    currentsum= sum+tmp;
                     Cookies.set('currentsum', currentsum, { expires: 1 });
                     $('span.ui-li-count').html(currentsum+'元');
                 }
@@ -349,13 +321,9 @@ $(document).ready(function(){
                   //建立當前選購商品cookie
                   var myAry = [car.numitem, meal, iq,iprice];
                   Cookies.set(car.numitem, JSON.stringify(myAry), { expires: 1 });
-                  //createCookie(car.numitem, JSON.stringify(myAry),1);
 
                   //建立當前選購商品總次數的cookie
                   Cookies.set('currentnumitem', car.numitem, { expires: 1 });
-                  //createCookie('currentnumitem', car.numitem,1);
-
-                  //createCookie('currentotal', car.total,1);
                         });
                   },
                   error: function(jqXHR, textStatus, errorThrown) {
@@ -364,15 +332,7 @@ $(document).ready(function(){
                   }
                   
                 });
-       
- 
-
-
-
-
      event.stopPropagation();
-
-
    });
    
    
@@ -381,12 +341,7 @@ $(document).ready(function(){
 
   });
 
-
-
-
   });  
-
-
 
 </script>
 </div>

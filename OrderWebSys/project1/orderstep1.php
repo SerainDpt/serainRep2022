@@ -41,34 +41,25 @@ div.error { float: right; color : red; }
 
 <?php
 
-
 session_start();
-
-
-if(!isset($_SESSION['username'])){
-        
-  session_unset();
-  session_destroy();
-  header('Location:startpage.html');
-  exit;
-      }
+if(!isset($_SESSION['username']))
+{   
+    session_unset();
+    session_destroy();
+    header('Location:startpage.html');
+    exit;
+}
 else      
-$user_id=$_SESSION["username"];
-
+    $user_id=$_SESSION["username"];
 
 //-----------connect資料庫-----------------//
-
-
 $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
 if(!$db)
-{die("無法連線伺服器".mysqli_error());}
-
+    die("無法連線伺服器".mysqli_connect_errno());
 $db_select=mysqli_select_db($db,"ordering_system"); 
 if(!$db_select)
-{die("無法選擇資料庫".mysqli_error());}
-// 設定連線編碼
-mysqli_query( $db, "SET NAMES 'utf8'");
-
+    die("無法選擇資料庫".mysqli_connect_errno());      
+mysqli_query( $db, "SET NAMES 'utf8'");// 設定連線編碼
 ?>
 
 <div class="pagecontent" data-role="page">
@@ -134,15 +125,14 @@ mysqli_query( $db, "SET NAMES 'utf8'");
             <?php
                 $sql= "SELECT guest_phone FROM guest WHERE guest_id='".$user_id."'";                        
                 $result=mysqli_query($db,$sql);
-
                 if(mysqli_num_rows($result)>0)
                 {
-                  $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
-                  //substr_replace($row["guest_address"],'',-1);
-                  $d_phone=$row["guest_phone"];}
+                    $row=mysqli_fetch_array($result,MYSQLI_ASSOC);
+                    //substr_replace($row["guest_address"],'',-1);
+                    $d_phone=$row["guest_phone"];
+                }
                 else
-                  $d_phone='請輸入聯絡電話';
-
+                    $d_phone='請輸入聯絡電話';
             ?>
           
             <div data-role="fieldcontain" data-inset="true">
@@ -160,9 +150,9 @@ mysqli_query( $db, "SET NAMES 'utf8'");
               <div data-role="fieldcontain" id='d_info'>
                  <div id=upuser>請確認手機號碼</div>
                  <input type="text" style="font-size:20px" id="userphone" size="33" value="<?php echo $d_phone ?>"/>
-              </div>              
+              </div>             
               
-              </div>            
+              </div>   
     
 
 

@@ -37,16 +37,13 @@
 session_start();
 $user_id=$_SESSION["username"];
 
-if(empty($_SESSION['username'])){
-        
+if(empty($_SESSION['username']))
+{    
   session_unset();
   session_destroy();
   header('Location: startpage.html');
   exit;
-      }
-
-
-
+}
 
 ?>
 </head>
@@ -81,12 +78,6 @@ if(empty($_SESSION['username'])){
       </div>     
 
     </div>
-
- 
-
-
-
-
 </div>
 
 </body>

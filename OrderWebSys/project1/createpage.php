@@ -29,59 +29,58 @@
 
 <?php
 
-
 $error = ""; $result =0 ; 
-if(isset($_POST["send"])){
+if(isset($_POST["send"]))
+{
+    $id=$_POST["user_id"];
+    $pw=$_POST["user_pw"];
+    $email=$_POST["email"];  
+    $phone=$_POST["phone"];
+    $name=$_POST["user_name"];
+    $address_1=$_POST["address_1"];
+    $address_2=$_POST["address_2"];
+    $address_3=$_POST["address_3"];
+    $address=$address_1.$address_2.$address_3;
 
-  $id=$_POST["user_id"];
-  $pw=$_POST["user_pw"];
-  $email=$_POST["email"];  
-  $phone=$_POST["phone"];
-  $name=$_POST["user_name"];
-  $address_1=$_POST["address_1"];
-  $address_2=$_POST["address_2"];
-  $address_3=$_POST["address_3"];
-  $address=$address_1.$address_2.$address_3;
+    if (empty($id)) 
+    { // 欄位沒填
+        $error = "帳號為必填欄位<br/>";
+    }
+    else 
+    { 
+        if (empty($pw)) 
+        { // 欄位沒填
+          $error .= "密碼為必填欄位<br/>";
+        } 
+        else 
+        { // 表單處理
+            //-----------connect資料庫-----------------//
+            $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
+            if(!$db)
+                die("無法連線伺服器".mysqli_connect_errno());
+            $db_select=mysqli_select_db($db,"ordering_system"); 
+            if(!$db_select)
+                die("無法選擇資料庫".mysqli_connect_errno());      
+            mysqli_query( $db, "SET NAMES 'utf8'");// 設定連線編碼
 
-  if (empty($id)) { // 欄位沒填
-    $error = "帳號為必填欄位<br/>";
- }
- else { 
-  if (empty($pw)) { // 欄位沒填
-     $error .= "密碼為必填欄位<br/>";
-  } 
-  else { // 表單處理
-      $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
-      if(!$db)
-      {die("無法連線伺服器".mysqli_error());}
+            $sql= "INSERT INTO guest (guest_id,guset_password,guest_email,guest_phone,guest_address,guest_name) VALUES ('$id','$pw','$email','$phone','$address','$name')";
 
-      $db_select=mysqli_select_db($db,"ordering_system"); 
-      if(!$db_select)
-      {die("無法選擇資料庫".mysqli_error());}
-      // 設定連線編碼
-      mysqli_query( $db, "SET NAMES 'utf8'");
-      $sql= "INSERT INTO guest (guest_id,guset_password,guest_email,guest_phone,guest_address,guest_name) VALUES ('$id','$pw','$email','$phone','$address','$name')";
+            if(!mysqli_query($db,$sql))
+                $result="FAIL".mysqli_connect_errno();
+            else 
+                $result=1;
 
-      if(!mysqli_query($db,$sql)){
+            mysqli_close($db);
 
-        $result="FAIL".mysqli_error();
-      }
-
-      else $result=1;
-      mysqli_close($db);
-
-      }
+        }
+    }
 }
-}
-
-else{
-$id="";$pw="";$email="";$phone="";$address="";
-
+else
+{
+    $id="";$pw="";$email="";$phone="";$address="";
 }
 
 ?>
-
-
 
 <div data-role="page" id="createpage" class="ui-page">
   <div data-role="header">
