@@ -39,6 +39,7 @@ if(empty($_SESSION['username'])){
 
 $result = "";
 
+
 //-----------存入資料庫-----------------//
 $sqlerr="";
 $db=mysqli_connect("localhost","root","@567-ygv-bnm@");
@@ -58,18 +59,19 @@ $row=mysqli_fetch_array($result,MYSQLI_NUM);
 
 $newitemnumber=0;
 
-if(empty($row[0])){
-$lastitemnumber=0;
-$t=time();
-$today=(int)date("Ymd",$t);
-$newitemnumber= $today*10000 + $lastitemnumber +1;}
-else{
-  $t=time();
-  $today=(int)date("Ymd",$t);
-  $tmpnmuber=(int)substr($row[0] , 8 , 4 );
-  
-  $newitemnumber=  $today*10000 +$tmpnmuber+1;
-
+if(empty($row[0]))
+{
+    $lastitemnumber=0;
+    $t=time();
+    $today=(int)date("Ymd",$t);
+    $newitemnumber= $today*10000 + $lastitemnumber +1;
+}
+else
+{
+    $t=time();
+    $today=(int)date("Ymd",$t);
+    $tmpnmuber=(int)substr($row[0] , 8 , 4 );
+    $newitemnumber=  $today*10000 +$tmpnmuber+1;
 }
 
 
@@ -81,9 +83,9 @@ else{
        $sum= (int)$_COOKIE['currentsum'];
 
        if(isset($_COOKIE['currentphone']))
-       $currentphone= $_COOKIE['currentphone'];
+          $currentphone= $_COOKIE['currentphone'];
       
-
+        //有地址有電話
        if(isset($_COOKIE['currentaddress']) && !empty($_COOKIE['currentaddress']) && isset($_COOKIE['currentphone']) && !empty($_COOKIE['currentphone']))
        {
          $currentaddress= $_COOKIE['currentaddress'];
@@ -91,11 +93,13 @@ else{
          $sql_takeinfomation="INSERT INTO takeinfomation (takeway,takedate,taketime,totalsum,order_id,delivery_add,delivery_pho,guest_id)
          VALUES ('".$newpickway."','".$userdata."', '".$usertime."','$sum','$newitemnumber','$currentaddress','$currentphone','".$user_id."')";
         }
+        
+      //有電話沒有地址
        if(isset($_COOKIE['currentphone']) && !empty($_COOKIE['currentphone']) && !isset($_COOKIE['currentaddress']))
-      { $sql_takeinfomation="INSERT INTO takeinfomation (takeway,takedate,taketime,totalsum,order_id,delivery_add,delivery_pho,guest_id)
-       VALUES ('".$newpickway."','".$userdata."', '".$usertime."','$sum','$newitemnumber','-','$currentphone','".$user_id."')";
-       
-      }
+       { 
+         $sql_takeinfomation="INSERT INTO takeinfomation (takeway,takedate,taketime,totalsum,order_id,delivery_add,delivery_pho,guest_id)
+         VALUES ('".$newpickway."','".$userdata."', '".$usertime."','$sum','$newitemnumber','-','$currentphone','".$user_id."')";
+       }
        
 
        mysqli_query($db,$sql_takeinfomation)

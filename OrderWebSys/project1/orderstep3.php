@@ -112,13 +112,15 @@ $result = "";
                $arr3= $_COOKIE['currentphone'];
                
 
-            if($arr[2]=='外帶'){  
+            if($arr[2]=='外帶')
+            {  
             echo "<li id='userdetail'>";                                                       
             echo "<h3>"."您的取餐方式: ".$arr[2]."</br>".
                  "取餐時間: ".$arr[0]." / ".$arr[1]."</br>".
                  "聯絡號碼: "."</br>".$arr3."</h3></li>";
-                }  
-             else{
+            }  
+            else
+            {
               echo "<li id='userdetail'>";                                                       
               echo "<h3 >"."您的取餐方式: ".$arr[2]."</br>".
                    "外送抵達時間: ".$arr[0]." / ".$arr[1]."</br>";
@@ -193,11 +195,9 @@ $result = "";
           <?php
           if(isset($_COOKIE['currentsum']))
           {
-            $sum= $_COOKIE['currentsum'];
-          
+             $sum= $_COOKIE['currentsum'];
              echo "<h2>總金額</h2>";
              echo "<h3 style='background-color:yellow'>".$sum."元 </h3>";
-
           }
           ?>
 

@@ -108,7 +108,8 @@ mysqli_query( $db, "SET NAMES 'utf8'");
                     
                                   $row_b = mysqli_fetch_array($result_b, MYSQLI_NUM);
                                
-                                if($count==0){
+                                if($count==0)
+                                {
                                     echo "<li data-role='list-divider'>訂單編號: ".$row[0]."</li>";
                                                                 
                                     echo "<li><h3>取餐時間: ".$row_b[2]." / ".$row_b[3]."</h3>";
@@ -118,28 +119,21 @@ mysqli_query( $db, "SET NAMES 'utf8'");
                                     echo "<h3>餐點: ".$row[1]."</h3>";
                                     echo "<p>單價: ".$row[2]."元"." / 選購份數: ".$row[3]." 份</p>";
                                 }
- 
-
                                 else{
-                                        if($row[0]==$temp){
+                                        if($row[0]==$temp)
+                                        {
                                             echo "<h3>餐點: ".$row[1]."</h3>";
-                                            echo "<p>單價: ".$row[2]."元"." / 選購份數: ".$row[3]." 份</p>";
-                                            
+                                            echo "<p>單價: ".$row[2]."元"." / 選購份數: ".$row[3]." 份</p>";                                            
                                         }
-                                        else{
-                                        
-                                        echo "<button data-theme='b' data-icon='delete' data-iconshadow='true' id='".$temp."'>取消訂單</button></li>";
-                                        echo "<li data-role='list-divider'>訂單編號: ".$row[0]."</li>";
-                                        
-                                        
-                                        echo "<li><h3>取餐時間: ".$row_b[2]." / ".$row_b[3]."</h3>";
-                                        echo "<h3>取餐方式: ".$row_b[1]."</h3>";
-                                        echo "<h3>總計: ".$row_b[4]." 元</h3><hr />"; 
-
-                                        echo "<h3>餐點: ".$row[1]."</h3>";
-                                        echo "<p>單價: ".$row[2]."元"." / 選購份數: ".$row[3]." 份</p>";
-
-                                            
+                                        else
+                                        {                                       
+                                            echo "<button data-theme='b' data-icon='delete' data-iconshadow='true' id='".$temp."'>取消訂單</button></li>";
+                                            echo "<li data-role='list-divider'>訂單編號: ".$row[0]."</li>";
+                                            echo "<li><h3>取餐時間: ".$row_b[2]." / ".$row_b[3]."</h3>";
+                                            echo "<h3>取餐方式: ".$row_b[1]."</h3>";
+                                            echo "<h3>總計: ".$row_b[4]." 元</h3><hr />"; 
+                                            echo "<h3>餐點: ".$row[1]."</h3>";
+                                            echo "<p>單價: ".$row[2]."元"." / 選購份數: ".$row[3]." 份</p>";                                        
                                         }
                                     }
                                 
@@ -204,9 +198,6 @@ $(document).on('click','button',function(event){
 
 
       });
-
-
-
     },
     error: function(jqXHR, textStatus, errorThrown) {
            console.log(textStatus, errorThrown);

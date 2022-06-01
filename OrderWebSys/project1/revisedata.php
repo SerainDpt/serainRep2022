@@ -143,13 +143,14 @@ $(document).ready(function() {
 
     $('input[name=user_name]').blur( function() {
        // 取得表單欄位值     
-       if($(this).val().length <= 0){ 
-        $('input[name=user_name]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填入姓名</span>');
-        flag_c=0;
-    }   
-      else
-      flag_c=1;  
-           event.stopPropagation();
+       if($(this).val().length <= 0)
+       { 
+          $('input[name=user_name]').parent().after('<span style="color:red;padding-left:10px;font-family:Microsoft JhengHei;">請填入姓名</span>');
+          flag_c=0;
+       }   
+       else
+          flag_c=1;  
+        event.stopPropagation();
 
            if(flag_c==0 || flag_d==0 || flag_e==0)
                $('button#send').attr('disabled', 'disabled');   

@@ -270,10 +270,7 @@ mysqli_close($db);
 
 
 
-  <script>
-
-
-
+<script>
 //建立car物件,作為計算總額使用
   var car={
    total:0,
@@ -320,29 +317,29 @@ $(document).ready(function(){
 
               //計算每筆item 編號,若cookie('currentnumitem')不存在,代表第一次進行購物；
               //若存在,代表可能是從購物車返回到此頁的情況,這時再把cookie('currentnumitem')值取出作為item編號,避免蓋過原本的cookie
-                if(!parseInt(Cookies.get('currentnumitem')))
-              { car.numitem++;
-                
+              if(!parseInt(Cookies.get('currentnumitem')))
+              { 
+                car.numitem++;             
               }
-                else
-                {
+              else
+              {
                   car.numitem=parseInt(Cookies.get('currentnumitem'));
-                  car.numitem++;
-                
-                }
+                  car.numitem++;               
+              }
 
 
 
                 //建立當前選購商品總金額的cookie
-                if(car.numitem ==1){
+                if(car.numitem ==1)
+                {
                     //createCookie('currentsum', sum,1);
                     Cookies.set('currentsum', sum, { expires: 1 });
                     $('span.ui-li-count').html(sum+'元');
-                  }
-                else{
+                }
+                else
+                {
                     var tmp= parseInt(Cookies.get('currentsum'));
-                    currentsum= sum+tmp;
-                    
+                    currentsum= sum+tmp;     
                     //createCookie('currentsum', currentsum,1);
                     Cookies.set('currentsum', currentsum, { expires: 1 });
                     $('span.ui-li-count').html(currentsum+'元');

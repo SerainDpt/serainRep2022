@@ -43,23 +43,16 @@
 <?php
 
 session_start();
-
-
-if(empty($_SESSION['username'])){
-        
+if(empty($_SESSION['username']))
+{        
   session_unset();
   session_destroy();
   header('Location: startpage.html');
   exit;
-      }
+}
 else
-$user_id=$_SESSION["username"];
-
-
+  $user_id=$_SESSION["username"];
 $result = "";
-
-
-
 ?>
 
 
@@ -149,7 +142,7 @@ $result = "";
                       */
 
   
-                      //每次迴圈所產生的delete BUT id編號
+                      //每次迴圈所產生的delete BTN id編號
                       $dbt='dbt'.$a ;
                       echo "<a  id='$dbt' class='button' data-icon='delete'>移除</a>";
 
@@ -195,16 +188,13 @@ $result = "";
           <?php
           if(isset($_COOKIE['currentsum']) && !empty($_COOKIE['currentsum']))
           {
-            $sum= $_COOKIE['currentsum'];
-          
+            $sum= $_COOKIE['currentsum'];         
              echo "<h2 id='sumtitle'>總金額</h2>";
              echo "<h3 id='sum'style='background-color:yellow'>".$sum."元 </h3>";
 
           }
           else{
             echo "<h2>尚無項目</h2>";
-            
-
           }
 
           ?>
